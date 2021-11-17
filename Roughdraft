@@ -1,10 +1,11 @@
+#this is a simple application recruitment management program
 print('ARM')
 class Applicant:
     def __init__(self):
         self._agerange = ''
         self._status = ''
         self._location = 0
-        self._jobs =''
+        self._jobs = ''
         self._level= 0
     def addApplicant(self):
         try:
