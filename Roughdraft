@@ -1,0 +1,17 @@
+print('ARM')
+class Applicant:
+    def __init__(self):
+        self._agerange = ''
+        self._level = 0
+        self._location = 0
+        self._jobs =''
+        self._status = 0
+    def addApplicant(self):
+        try:
+            self._agerange = input('Enter age range make: ')
+            self._level = input('Enter applicant level: ')
+            self._location = int(input('Enter applicant location: '))
+            self._jobs = input('Enter applicant interested jobs: ')
+            self._status = int(input('Enter applicant status: '))
+            return True
+            
