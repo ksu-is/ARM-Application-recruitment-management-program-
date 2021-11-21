@@ -7,6 +7,8 @@ class Applicant:
         self._location = 0
         self._jobs = ''
         self._level= 0
+        self._availability= '' 
+ # add an applicant 
     def addApplicant(self):
         try:
             self._agerange = input('Enter age range make: ')
@@ -14,4 +16,5 @@ class Applicant:
             self._location = int(input('Enter applicant location: '))
             self._jobs = input('Enter applicant interested jobs: ')
             self._level = int(input('Enter applicant status: '))
+            self._availability = input('Enter applicant new availability')
             return True
