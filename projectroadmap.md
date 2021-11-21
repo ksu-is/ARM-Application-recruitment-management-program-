@@ -9,7 +9,7 @@
 Similar projects sources:
 - [example-inventory-management-system](https://github.com/ksu-is/example-inventory-management-system#overview)
 # Sprint 2:
-- [ ] Begin coding
+- [x] Begin coding
 - [ ] Make small updates and add commit messages
 - [ ] Commit at least 6 code changes
 - [ ] Track progress in project road map
