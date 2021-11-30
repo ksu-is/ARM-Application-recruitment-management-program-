@@ -93,10 +93,10 @@ elif (feature == "6"):
 
 
 try:
-        #if we call the connection execute method it invisibly creates a cursor for us
+        #call the connection execute method to creates a cursor
         conn.execute(sql, (update_value,update_name))
         #update the change made date log
-        sql = "UPDATE vaccines set changemade = ? where id =  ?"
+        sql = "UPDATE applicant changemade = ? where id =  ?"
         changemade = str(now.year) +"/"+str(now.month) +"/"+str(now.day)
         conn.execute(sql, (changemade,update_name))
         conn.commit() 
@@ -104,3 +104,23 @@ try:
 except Error as e:
         print(e)
         pass
+
+# Now I want to delete applicants that are either not hired or no longer interested. 
+def delete_data():
+    ID  =  input("Enter the ID for the applicant to delete:") # can only enter ID to reduce mistaken deletions
+    cursor = conn.cursor() # want to target the ID in the database
+    cursor.execute("select name from Job_applicants where ID = "+ID) 
+    delete_item = cursor.fetchall() # get the data targeted
+    confirm = input("Are you sure you want to delete " + ID + " " + str(delete_item[0]) + "? (Enter 'y' to confirm.)")
+    if confirm.lower() == "y":
+        try:
+            delete_sql = "DELETE FROM applicants WHERE id = ?"
+            conn.execute(delete_sql,ID)
+            result = conn.commit() # check if it worked 
+            if result == None:
+                print (ID + " " + str(delete_item[0]) + " deleted.")
+            else:
+                print ("Sorry, deletion failed for unknown reasons.")
+        except Error as e:
+            print (e)
+            pass
