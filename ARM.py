@@ -9,6 +9,7 @@ import datetime
 now = datetime.datetime.now()
 #connecting Database 
 database_file_path = "Job_applicants.db"
+database_file_path = "Job_applicants.csv"
 def create_connection(db_file):
     try:
         connection = sqlite3.connect(db_file) 
@@ -124,3 +125,34 @@ def delete_data():
         except Error as e:
             print (e)
             pass
+conn = create_connection(database_file_path)
+if conn:
+    print ("Connected to database: ",conn)  
+else:
+    print("Error connecting to database.")
+
+while True:
+    print("Welcome to Application Recruitment Management System!")
+    print("1 to view applicants")
+    print("2 to insert a new applicant")
+    print("3 to update a applicant application status")
+    print("4 to delete a applicantion")
+    print("X to exit")
+    name = input ("Enter one of the above options to proceed: ")
+    if (name =="1"):
+        for row in view_data():
+            thisrow = "  --> "
+            for item in row:
+                thisrow += str(item) + "  "
+            print (thisrow)
+    elif(name == "2"):
+        insert_data()
+    elif(name == "3"):
+        update_data()
+    elif(name == "4"):
+        delete_data()
+    elif(name == "X"):
+        conn.close()
+        #exit the loop
+        print('Goodbye')
+        break
