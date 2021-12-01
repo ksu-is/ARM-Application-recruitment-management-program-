@@ -14,6 +14,7 @@ MENU_PROMPT = """
 def menu():
     connection = database.connect()
     database.create_tables(connection)
+    print("Welcome to ARMS! Your Application Recruitment Management System!")
 
 
     while (user_input := input(MENU_PROMPT)) != "5":
