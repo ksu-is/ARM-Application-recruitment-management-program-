@@ -5,6 +5,10 @@ import os
 import sqlite3
 from sqlite3 import Error 
 import datetime
+import pandas as pd 
+
+
+
 
 now = datetime.datetime.now()
 #connecting Database 
@@ -22,6 +26,17 @@ def create_connection(db_file):
 conn = sqlite3.connect('job_applicants.db')
 #Create cursor
 c = conn.cursor()
+
+c.execute("INSERT INTO applicants VALUES (1121, 'Lisa', 'Elders', 770-212-4456, 1, 25-35, 'cashier', 'Monday-Friday', 5.9)")
+#commit the command 
+conn.commit()
+#close connection
+conn.close()
+
+
+
+
+
 
 #date to be inserted 
 def insert_data():
