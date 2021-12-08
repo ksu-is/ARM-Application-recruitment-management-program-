@@ -65,9 +65,39 @@ def update_applicants():
         availability = :availability,
         location_miles = :miles
 
-        WHERE oid = :oid""")
+        WHERE oid = :oid""",)
 
 
+def update_applicant():
+    for row in get_all_applicants():
+            thisrow = "  --> "
+            for item in row:
+                thisrow += str(item) + "  "
+            print (thisrow)
+update_name = input("Enter the name of the applicant to edit: ")
+print('''
+        1 = edit name
+        2 = edit hire status
+        3 = edit location
+        4 = edit availability
+        5 = edit Jobs
+        6 = edit expirationdate''')
 
+feature = input("Enter which feature of the data do you want to edit: ")
+update_value = input ("Editing "+feature+ ": enter the new info: ")
+
+
+if(feature == "1"):
+    sql = "UPDATE applicant name = ? where id =  ?"
+elif (feature == "2"):
+       sql = "UPDATE applicant hire status = ? where id =  ?" 
+elif (feature == "3"):
+       sql = "UPDATE applicant location  = ? where id =  ?"
+elif (feature == "4"):
+       sql = "UPDATE applicant availability  = ? where id =  ?"
+elif (feature == "5"):
+       sql = "UPDATE applicant interested jobs  = ? where id =  ?"
+elif (feature == "6"):
+       sql = "UPDATE applicant set expirationdate = ? where id =  ?"  
 
 

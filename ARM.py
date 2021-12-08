@@ -5,65 +5,48 @@ import os
 import sqlite3
 from sqlite3 import Error 
 import datetime
+import os
+from sqlite3.dbapi2 import Connection
 
-
-
-
-
-now = datetime.datetime.now()
-#connecting Database 
-database_file_path = "Job_applicants.db"
-database_file_path = "Job_applicants.csv"
+from database import CREATE_APPLICANT_TABLE, INSERT_APPLICANT, add_applicant, get_all_applicants 
+path_root = os.path.dirname(os.path.abspath(__file__))
+database_file_path = str(path_root)+"/applicants.db"
+database_file_path = "applicants.db" #connecting Database 
 def create_connection(db_file):
     try:
-        connection = sqlite3.connect(db_file) 
-        return connection
+        Connection = sqlite3.connect(db_file)
+        return Connection
     except Error as e:
         print(e)
         return None
-
-#creat a database or connect to one 
-conn = sqlite3.connect('job_applicants.db')
-#Create cursor
-c = conn.cursor()
-
-c.execute("INSERT INTO applicants VALUES (1121, 'Lisa', 'Elders', 770-212-4456, 1, 25-35, 'cashier', 'Monday-Friday', 5.9)")
-#commit the command 
-conn.commit()
-#close connection
-conn.close()
+   
 
 
-
-
-
-
-#date to be inserted 
-def insert_data():
-    name = input("Enter the name of the applicant: ")
-    ID = input("Enter the applicant ID number: ") # number unique to the applicant 
-    phone_number = input("Enter the applicant #") # appicant phone number
-    location = input ("Enter the applicant location in miles: ") # This is how far the applicant is willing to travel for the job
-    availability = input("Enter applicant availability: ") # The days the applicants are willing to work 
-    level = input("Enter applicant level: ") #This is the level the applicant gets after taking the job assassment 
-    Jobs = input("Enter applicant interested jobs: ") # positions applicant is interested in working in
+def insert_data(connection, first_name, last_name, phone_number, level, age_range, interested_jobs, availability, location_miles):
+    first_name = input("Enter the name of the item: ")
+    last_name = input("Enter the national drug code of the item: ")
+    phone_number = input ("Enter the item inventory location: ")
+    level = input("Enter number of doses left: ")
+    age_range = input("Enter arrival date: ")
+    interested_jobs = input("Enter expiration date: ")
+    availability = input("Enter expiration date: ")
+    location_miles = input("Enter expiration date: ")
     changemade = str(now.year) +"/"+str(now.month) +"/"+str(now.day)
     try:      
-        sqlresult = conn.execute("INSERT INTO job_applicants (first_name,last_name,ID, phone_number,location, availability, level, jobs,changemade)\
-            values("+"'"+ str(name) +"'" + ",'"+ str(ID) +"', '"+ str(phone_number) +"', '"+ str(location) +"','"+ str (availability)+"','"+str(level)+"','"+ str (Jobs)+"','"+str(changemade)+"')")
+        sqlresult = conn.execute("INSERT INTO applicants (first_name,last_name, phone_number, level, age_range, interested_jobs, availability, location_miles,changemade)\
+            values("+"'"+ str(first_name) +"'" + ",'"+ str(last_name) +"', '"+ str(phone_number) +"','"+ str(age_range) +"','"+ str(location_miles) +"','"+ str (availability)+"','"+str(level)+"','"+ str (interested_jobs)+"','"+str(changemade)+"')")
         result = conn.commit() #this actually runs the SQL and inserts the data into the database
         if result == None:
             print("*** Data saved to database. ***")
     except Error as e:
         print ("*** Insert error: ",e)
         pass
-
-
-def view_data():
+                                 
+def view_data(): 
     try:
-        cursor = conn.execute ("SELECT first_name,last_name, ID,location,availability,level,jobs,changemade FROM Job_applicants" )
+        cursor = conn.execute ("SELECT id,name, ndc,location,availability,arrivaldate,expirationdate,changemade FROM applicants" )
         alldata = []
-        alldata.append(["First_Name","Last_Name","ID","Phone_Number","Location","Availability","Level","Jobs","Last Update"])
+        alldata.append(["ID","Name","NDC","Location","Availability","Arrival Date","Expiration Date","Last Update"])
         for row in cursor:
             thisrow=[]
             for x in range(8):
@@ -73,87 +56,87 @@ def view_data():
     except Error as e:
         print (e)
         pass
-
-
 def update_data():
     for row in view_data():
             thisrow = "  --> "
             for item in row:
                 thisrow += str(item) + "  "
             print (thisrow)
-update_name = input("Enter the name of the applicant to edit: ")
-print('''
+    update_ID = input("Enter the ID of the data record to edit: ")
+    print('''
         1 = edit name
-        2 = edit hire status
+        2 = edit ndc
         3 = edit location
         4 = edit availability
-        5 = edit Jobs
+        5 = edit arrivaldate
         6 = edit expirationdate''')
 
-feature = input("Enter which feature of the data do you want to edit: ")
-update_value = input ("Editing "+feature+ ": enter the new info: ")
+    feature = input("Enter which feature of the data do you want to edit: ")
+    update_value = input ("Editing "+feature+ ": enter the new value: ")
 
-
-if(feature == "1"):
-    sql = "UPDATE applicant name = ? where id =  ?"
-elif (feature == "2"):
-       sql = "UPDATE applicant hire status = ? where id =  ?" 
-elif (feature == "3"):
-       sql = "UPDATE applicant location  = ? where id =  ?"
-elif (feature == "4"):
-       sql = "UPDATE applicant availability  = ? where id =  ?"
-elif (feature == "5"):
-       sql = "UPDATE applicant interested jobs  = ? where id =  ?"
-elif (feature == "6"):
-       sql = "UPDATE applicant set expirationdate = ? where id =  ?"  
-
-
-try:
-        #call the connection execute method to creates a cursor
-        conn.execute(sql, (update_value,update_name))
+    if(feature == "1"):
+        sql = "UPDATE vaccines set name = ? where id =  ?"
+    elif (feature == "2"):
+       sql = "UPDATE vaccines set ndc = ? where id =  ?" 
+    elif (feature == "3"):
+       sql = "UPDATE vaccines set location  = ? where id =  ?"
+    elif (feature == "4"):
+       sql = "UPDATE vaccines set availability  = ? where id =  ?"
+    elif (feature == "5"):
+       sql = "UPDATE vaccines set arrivaldate  = ? where id =  ?"
+    elif (feature == "6"):
+       sql = "UPDATE vaccines set expirationdate = ? where id =  ?"  
+        
+    try:
+        #if we call the connection execute method it invisibly creates a cursor for us
+        conn.execute(sql, (update_value,update_ID))
         #update the change made date log
-        sql = "UPDATE applicant changemade = ? where id =  ?"
+        sql = "UPDATE vaccines set changemade = ? where id =  ?"
         changemade = str(now.year) +"/"+str(now.month) +"/"+str(now.day)
-        conn.execute(sql, (changemade,update_name))
+        conn.execute(sql, (changemade,update_ID))
         conn.commit() 
-
-except Error as e:
+        
+    except Error as e:
         print(e)
         pass
 
-# Now I want to delete applicants that are either not hired or no longer interested. 
 def delete_data():
-    ID  =  input("Enter the ID for the applicant to delete:") # can only enter ID to reduce mistaken deletions
-    cursor = conn.cursor() # want to target the ID in the database
-    cursor.execute("select name from Job_applicants where ID = "+ID) 
-    delete_item = cursor.fetchall() # get the data targeted
-    confirm = input("Are you sure you want to delete " + ID + " " + str(delete_item[0]) + "? (Enter 'y' to confirm.)")
+    id_  =  input("Enter the ID for the data record to delete:")
+    cursor = conn.cursor() #This sets a spot in the database connection (cursor) for targeted retrieval
+    cursor.execute("select first_name from applicants where ID = "+id_) #create an object referencing the data
+    delete_item = cursor.fetchall() # get the data
+    confirm = input("Are you sure you want to delete " + id_ + " " + str(delete_item[0]) + "? (Enter 'y' to confirm.)")
     if confirm.lower() == "y":
         try:
             delete_sql = "DELETE FROM applicants WHERE id = ?"
-            conn.execute(delete_sql,ID)
-            result = conn.commit() # check if it worked 
+            conn.execute(delete_sql,id_)
+            result = conn.commit() #capture the result of the commit and use it to check the result
             if result == None:
-                print (ID + " " + str(delete_item[0]) + " deleted.")
+                print (id_ + " " + str(delete_item[0]) + " deleted.")
             else:
-                print ("Sorry, deletion failed for unknown reasons.")
+                print ("Deletion failed during SQL execution.")
         except Error as e:
             print (e)
             pass
+    else:
+        print("Deletion aborted.")
+
 conn = create_connection(database_file_path)
+now = datetime.datetime.now()
+
 if conn:
     print ("Connected to database: ",conn)  
 else:
     print("Error connecting to database.")
 
 while True:
-    print("Welcome to Application Recruitment Management System!")
-    print("1 to view applicants")
-    print("2 to insert a new applicant")
-    print("3 to update a applicant application status")
-    print("4 to delete a applicantion")
+    print("Welcome to the Vaccine Management System!")
+    print("1 to view the data")
+    print("2 to insert a new data record")
+    print("3 to update a data record")
+    print("4 to delete a data record")
     print("X to exit")
-    name = input ("Enter one of the above options to proceed: ")
+    name = input ("Choose an operation to perform: ")
     if (name =="1"):
         for row in view_data():
             thisrow = "  --> "
@@ -168,6 +151,11 @@ while True:
         delete_data()
     elif(name == "X"):
         conn.close()
-        #exit the loop
-        print('Goodbye')
         break
+  
+    
+    
+    
+    
+    
+   
