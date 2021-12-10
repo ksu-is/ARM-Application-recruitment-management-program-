@@ -8,7 +8,7 @@ import datetime
 import os
 from sqlite3.dbapi2 import Connection
 
-from database import CREATE_APPLICANT_TABLE, INSERT_APPLICANT, add_applicant, get_all_applicants 
+ 
 path_root = os.path.dirname(os.path.abspath(__file__))
 database_file_path = str(path_root)+"/applicants.db"
 database_file_path = "applicants.db" #connecting Database 
