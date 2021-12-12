@@ -25,7 +25,7 @@ def create_connection(db_file):
         print(e)
         return None
 
-def insert_data():
+def insert_data(): #user inputs needed here
     name = input("Enter the name of the applicant: ")
     phonenumber = input("Enter applicant phone number: ")
     level = input("Enter applicant assessment level: ")
@@ -35,7 +35,7 @@ def insert_data():
     hirestatus = input("Enter applicant hire status: ")
     changemade = str(now.year) +"/"+str(now.month) +"/"+str(now.day)
     try:      
-        sqlresult = conn.execute("INSERT INTO vaccines (name,phonenumber,level,jobs,location,availability,hirestatus,changemade)\
+        sqlresult = conn.execute("INSERT INTO applicants (name,phonenumber,level,jobs,location,availability,hirestatus,changemade)\
             values("+"'"+ str(name) +"'" + ",'"+ str(phonenumber) +"', '"+ str(level) +"', '"+ str(jobs) +"','"+ str (location)+"','"+str(availability)+"','"+ str (hirestatus)+"','"+str(changemade)+"')")
         result = conn.commit() #this actually runs the SQL and inserts the data into the database
         if result == None:
@@ -46,7 +46,7 @@ def insert_data():
 
 def view_data(): #pulling all date within DB
     try:
-        cursor = conn.execute ("SELECT id,name, phonenumber,level,jobs,location,availability,hirestatus,changemade FROM vaccines" )
+        cursor = conn.execute ("SELECT id,name, phonenumber,level,jobs,location,availability,hirestatus,changemade FROM applicants" )
         alldata = []
         alldata.append(["ID","Name","Phonenumber","level","Jobs","Location","Availability","Hire Status","Last Update"])
         for row in cursor:
@@ -59,9 +59,9 @@ def view_data(): #pulling all date within DB
         print (e)
         pass
 
-def update_data():
+def update_data(): #update an applicant already in the DB
     for row in view_data():
-            thisrow = "  --> "
+            thisrow = " "
             for item in row:
                 thisrow += str(item) + "  "
             print (thisrow)
@@ -69,7 +69,7 @@ def update_data():
     print('''
         1) = edit name
         2) = edit phone number
-        3)= edit jobs
+        3) = edit jobs
         4) = edit location
         5) = edit availability
         6) = edit hire status''')
@@ -78,23 +78,23 @@ def update_data():
     update_value = input ("Editing "+feature+ ": enter the new value: ")
 
     if(feature == "1"):
-        sql = "UPDATE vaccines set name = ? where id =  ?"
+        sql = "UPDATE applicants set name = ? where id =  ?"
     elif (feature == "2"):
-       sql = "UPDATE vaccines set phone number = ? where id =  ?" 
+       sql = "UPDATE applicants set phone number = ? where id =  ?" 
     elif (feature == "3"):
-       sql = "UPDATE vaccines set jobs  = ? where id =  ?"
+       sql = "UPDATE applicants set jobs  = ? where id =  ?"
     elif (feature == "4"):
-       sql = "UPDATE vaccines set location  = ? where id =  ?"
+       sql = "UPDATE applicants set location  = ? where id =  ?"
     elif (feature == "5"):
-       sql = "UPDATE vaccines set availability  = ? where id =  ?"
+       sql = "UPDATE applicants set availability  = ? where id =  ?"
     elif (feature == "6"):
-       sql = "UPDATE vaccines set hirestatus = ? where id =  ?"  
+       sql = "UPDATE applicants set hirestatus = ? where id =  ?"  
         
     try:
         #calling the connection execute method
         conn.execute(sql, (update_value,update_ID))
         #update the change made date log
-        sql = "UPDATE vaccines set changemade = ? where id =  ?"
+        sql = "UPDATE applicants set changemade = ? where id =  ?"
         changemade = str(now.year) +"/"+str(now.month) +"/"+str(now.day)
         conn.execute(sql, (changemade,update_ID))
         conn.commit() #commiting changes to DB
@@ -106,23 +106,23 @@ def update_data():
 def delete_data():
     id_  =  input("Enter the ID for the applicant record to delete:")
     cursor = conn.cursor() #This sets a spot in the database connection (cursor) for targeted retrieval
-    cursor.execute("select name from vaccines where ID = "+id_) #create an object referencing the data
+    cursor.execute("select name from applicants where ID = "+id_) #create an object referencing the data
     delete_item = cursor.fetchall() # get the data
     confirm = input("Are you sure you want to delete applicant with ID number " + id_ + " " + str(delete_item[0]) + "? (Enter 'y' to confirm.)")
     if confirm.lower() == "y":
         try:
-            delete_sql = "DELETE FROM vaccines WHERE id = ?"
+            delete_sql = "DELETE FROM applicants WHERE id = ?" #showing where to delete from
             conn.execute(delete_sql,id_)
             result = conn.commit() #capture the result of the commit and use it to check the result
             if result == None:
                 print (id_ + " " + str(delete_item[0]) + " has been deleted from store list.")
             else:
-                print ("Deletion failed during SQL execution.")
+                print ("Deletion failed! Please try again later.")
         except Error as e:
             print (e)
             pass
     else:
-        print("You have canceled the deletion.")
+        print("You have canceled the deletion.") #after you decided you no longer want to delete
     
 
 conn = create_connection(database_file_path)
@@ -133,7 +133,7 @@ if conn:
 else:
     print("Error connecting to database.")
 
-while True:
+while True: #opening print statements
     print("Welcome to the Applicantion Recruitment Management System!")
     print("1 to view all applicants in store list")
     print("2 to insert a new applicant record to store list")
@@ -143,7 +143,7 @@ while True:
     name = input ("Choose an option to perform: ")
     if (name =="1"):
         for row in view_data():
-            thisrow = "  --> "
+            thisrow = " "
             for item in row:
                 thisrow += str(item) + "  "
             print (thisrow)
@@ -154,9 +154,9 @@ while True:
         update_data()
     elif(name == "4"):
         delete_data()
-    elif(name == "5"):
+    elif(name == "5"): #logging out of ARMS
         print("Thank you for using ARMS! You are logged out!")
         conn.close()
         break
     else:
-        print("Invalid input, please enter a valid option!")
+        print("Invalid input, please enter a valid option!") #adding an else if user inputs someting invalid
